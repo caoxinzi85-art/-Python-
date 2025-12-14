@@ -1,0 +1,18 @@
+{
+  "name": "Python 3.10 Financial Analysis",
+  "image": "mcr.microsoft.com/devcontainers/python:3.10",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {}
+  },
+  "postCreateCommand": "pip install -r requirements.txt",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  },
+  "forwardPorts": [8888],
+  "postStartCommand": "echo '环境已准备就绪！输入 python 12.12.2.py 运行程序。'"
+}
