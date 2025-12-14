@@ -9,20 +9,41 @@ warnings.filterwarnings('ignore')
 
 #%% ==================== 基础配置 ====================
 def setup_mac_chinese_font():
+    """设置中文字体，适配不同系统"""
+    import platform
     import matplotlib.pyplot as plt
-    plt.rcParams['axes.unicode_minus'] = False
-    fonts = ['Arial Unicode MS', 'PingFang HK', 'SimHei', 'Heiti TC', 'Microsoft YaHei']
-    for font in fonts:
+    
+    if platform.system() != 'Darwin':  # 如果不是 Mac
+        # 对于 Linux (Codespace) 和 Windows，使用可用的中文字体
+        # 在 Codespace 中，DejaVu Sans 支持中文
+        plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'SimHei', 'Arial Unicode MS']
+        plt.rcParams['axes.unicode_minus'] = False
+        print("✅ 已设置跨平台中文字体")
+        return
+    
+    # ========== 以下是原 Mac 字体设置逻辑 ==========
+    print("🖥️  检测到 Mac 系统，设置 Mac 专用字体")
+    mac_chinese_fonts = [
+        '/System/Library/Fonts/PingFang.ttc',
+        '/System/Library/Fonts/STHeiti Light.ttc',
+        '/Library/Fonts/Arial Unicode.ttf',
+    ]
+    available_font = None
+    for font_path in mac_chinese_fonts:
+        if os.path.exists(font_path):
+            available_font = font_path
+            break
+    if available_font:
         try:
-            from matplotlib.font_manager import fontManager
-            if font in [f.name for f in fontManager.ttflist]:
-                plt.rcParams['font.sans-serif'] = [font]
-                return
+            from matplotlib.font_manager import FontProperties
+            font_prop = FontProperties(fname=available_font)
+            plt.rcParams['font.sans-serif'] = [font_prop.get_name()]
         except:
-            continue
-    plt.rcParams['font.sans-serif'] = ['sans-serif']
-
-setup_mac_chinese_font()
+            plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
+    else:
+        plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'SimHei']
+    
+    plt.rcParams['axes.unicode_minus'] = False
 
 # ==================== 工具函数 ====================
 def print_header(title):
